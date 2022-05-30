@@ -1,0 +1,3 @@
+DROP USER IF EXISTS epam_reviewer;
+
+CREATE USER epam_reviewer WITH SUPERUSER PASSWORD '1234';
