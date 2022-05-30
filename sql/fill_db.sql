@@ -9,11 +9,11 @@ VALUES
 
 INSERT INTO request (scale,time_to_do,type_of_work,lodger_id)
 VALUES
-('small',30,'regular',1),
-('medium',65,'remote',3),
-('large',115,'traveling',5),
-('small',15,'home',2),
-('medium',50,'part-time',4);
+('SMALL',30,'REGULAR',1),
+('MEDIUM',65,'REMOTE',3),
+('LARGE',115,'TRAVELING',5),
+('SMALL',15,'HOME',2),
+('MEDIUM',50,'PART_TIME',4);
 
 INSERT INTO workers (is_busy)
 VALUES
