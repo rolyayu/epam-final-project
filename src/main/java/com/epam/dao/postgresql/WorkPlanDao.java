@@ -12,13 +12,17 @@ import java.util.List;
 
 public class WorkPlanDao extends BaseDao implements Dao<WorkPlan> {
     @Override
-    public boolean create(WorkPlan plan) throws DaoException {
+    public Long create(WorkPlan plan) throws DaoException {
         try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO work_plan (brigade_id, request_id) " +
-                "VALUES (?,?)")) {
+                "VALUES (?,?)",
+                Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, plan.getBrigade().getId());
             statement.setLong(2, plan.getRequest().getId());
             int changedRows = statement.executeUpdate();
-            return changedRows == 1;
+            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                resultSet.next();
+                return resultSet.getLong(1);
+            }
         } catch (SQLException e) {
             throw new DaoException(e);
         }

@@ -16,13 +16,17 @@ import java.util.Objects;
 
 public class BrigadeDao extends BaseDao implements Dao<Brigade> {
     @Override
-    public boolean create(Brigade brigade) throws DaoException {
+    public Long create(Brigade brigade) throws DaoException {
         try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO brigade(workers_id) " +
-                "VALUES (?)")) {
+                "VALUES (?)",
+                Statement.RETURN_GENERATED_KEYS)) {
             Array workers = getConnection().createArrayOf("int", brigade.getWorkersId());
             statement.setArray(1, workers);
-            int changedRows = statement.executeUpdate();
-            return changedRows == 1;
+            statement.executeUpdate();
+            try(ResultSet resultSet = statement.getGeneratedKeys()) {
+                resultSet.next();
+                return resultSet.getLong(1);
+            }
         } catch (SQLException e) {
             throw new DaoException(e);
         }

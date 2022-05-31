@@ -16,12 +16,16 @@ import java.util.Objects;
 
 public class WorkerDao extends BaseDao implements Dao<Worker> {
     @Override
-    public boolean create(Worker worker) throws DaoException {
+    public Long create(Worker worker) throws DaoException {
         try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO workers(is_busy) " +
-                "VALUES (?)")) {
+                "VALUES (?)",
+                Statement.RETURN_GENERATED_KEYS)) {
             statement.setBoolean(1, worker.isBusy());
             int changedRows = statement.executeUpdate();
-            return changedRows == 1;
+            try(ResultSet resultSet = statement.getGeneratedKeys()) {
+                resultSet.next();
+                return resultSet.getLong(1);
+            }
         } catch (SQLException e) {
             throw new DaoException(e);
         }

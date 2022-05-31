@@ -14,12 +14,16 @@ import java.util.List;
 
 public class LodgerDao extends BaseDao implements Dao<Lodger> {
     @Override
-    public boolean create(Lodger lodger) throws DaoException {
+    public Long create(Lodger lodger) throws DaoException {
         try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO lodgers (name) " +
-                "VALUES (?)")) {
+                "VALUES (?)",
+                Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, lodger.getName());
             int changedRows = statement.executeUpdate();
-            return changedRows == 1;
+            try(ResultSet resultSet = statement.getGeneratedKeys()) {
+                resultSet.next();
+                return resultSet.getLong(1);
+            }
         } catch (SQLException e) {
             throw new DaoException(e);
         }

@@ -15,16 +15,20 @@ import java.util.Objects;
 
 public class RequestDao extends BaseDao implements Dao<Request> {
     @Override
-    public boolean create(Request request) throws DaoException {
+    public Long create(Request request) throws DaoException {
         try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO request" +
                 "(scale,time_to_do,type_of_work,lodger_id) " +
-                "VALUES (?,?,?,?)")) {
+                "VALUES (?,?,?,?)",
+                Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, request.getWorkScale().getScale());
             statement.setInt(2, request.getTimeToDo());
             statement.setString(3, request.getWorkType().getType());
             statement.setLong(4, request.getLodger().getId());
             int changedRows = statement.executeUpdate();
-            return changedRows == 1;
+            try(ResultSet resultSet = statement.getGeneratedKeys()) {
+                resultSet.next();
+                return resultSet.getLong(1);
+            }
         } catch (SQLException e) {
             throw new DaoException(e);
         }
