@@ -17,7 +17,7 @@ import java.util.Objects;
 public class BrigadeDao extends BaseDao implements Dao<Brigade> {
     @Override
     public boolean create(Brigade brigade) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO \"brigade\"(\"workers_id\") " +
+        try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO brigade(workers_id) " +
                 "VALUES (?)")) {
             Array workers = getConnection().createArrayOf("int", brigade.getWorkersId());
             statement.setArray(1, workers);
@@ -77,8 +77,8 @@ public class BrigadeDao extends BaseDao implements Dao<Brigade> {
 
     @Override
     public boolean update(Brigade brigade) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("UPDATE \"brigade\" " +
-                "SET \"workers_id\"=? " +
+        try (PreparedStatement statement = getConnection().prepareStatement("UPDATE brigade " +
+                "SET workers_id=? " +
                 "WHERE \"id\"=?")) {
             statement.setArray(1, getConnection().createArrayOf("int", brigade.getWorkersId()));
             statement.setLong(2, brigade.getId());
@@ -91,7 +91,7 @@ public class BrigadeDao extends BaseDao implements Dao<Brigade> {
 
     @Override
     public boolean delete(Long id) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("DELETE FROM \"brigade\" " +
+        try (PreparedStatement statement = getConnection().prepareStatement("DELETE FROM brigade " +
                 "WHERE id=?")) {
             statement.setLong(1, id);
             int changedRows = statement.executeUpdate();

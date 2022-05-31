@@ -16,8 +16,8 @@ import java.util.Objects;
 public class RequestDao extends BaseDao implements Dao<Request> {
     @Override
     public boolean create(Request request) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO \"request\"" +
-                "(\"scale\",\"time_to_do\",\"type_of_work\",\"lodger_id\") " +
+        try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO request" +
+                "(scale,time_to_do,type_of_work,lodger_id) " +
                 "VALUES (?,?,?,?)")) {
             statement.setString(1, request.getWorkScale().getScale());
             statement.setInt(2, request.getTimeToDo());
@@ -33,7 +33,7 @@ public class RequestDao extends BaseDao implements Dao<Request> {
     @Override
     public Request read(Long id) throws DaoException {
         try (PreparedStatement statement = getConnection().prepareStatement("SELECT * " +
-                        "FROM \"request\" " +
+                        "FROM request " +
                         "JOIN lodgers l on l.id = request.lodger_id " +
                         "WHERE request.id=?",
                 Statement.RETURN_GENERATED_KEYS)) {
@@ -59,9 +59,9 @@ public class RequestDao extends BaseDao implements Dao<Request> {
 
     @Override
     public boolean update(Request request) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("UPDATE \"request\" " +
-                "SET \"scale\"=?,\"time_to_do\"=?,\"type_of_work\"=? " +
-                "WHERE \"id\"=?")) {
+        try (PreparedStatement statement = getConnection().prepareStatement("UPDATE request " +
+                "SET scale=?,time_to_do=?,type_of_work=? " +
+                "WHERE id=?")) {
             statement.setString(1, request.getWorkScale().getScale());
             statement.setInt(2, request.getTimeToDo());
             statement.setString(3, request.getWorkType().getType());
@@ -75,7 +75,7 @@ public class RequestDao extends BaseDao implements Dao<Request> {
 
     @Override
     public boolean delete(Long id) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("DELETE FROM \"request\" " +
+        try (PreparedStatement statement = getConnection().prepareStatement("DELETE FROM request " +
                 "WHERE id=?")) {
             statement.setLong(1, id);
             int changedRows = statement.executeUpdate();

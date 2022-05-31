@@ -17,7 +17,7 @@ import java.util.Objects;
 public class WorkerDao extends BaseDao implements Dao<Worker> {
     @Override
     public boolean create(Worker worker) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO \"workers\"(\"is_busy\") " +
+        try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO workers(is_busy) " +
                 "VALUES (?)")) {
             statement.setBoolean(1, worker.isBusy());
             int changedRows = statement.executeUpdate();
@@ -29,8 +29,8 @@ public class WorkerDao extends BaseDao implements Dao<Worker> {
 
     @Override
     public Worker read(Long id) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("SELECT (\"id\",\"is_busy\") " +
-                "FROM \"workers\" " +
+        try (PreparedStatement statement = getConnection().prepareStatement("SELECT (id,is_busy) " +
+                "FROM workers " +
                 "WHERE id=?", Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setLong(1, id);
@@ -49,9 +49,9 @@ public class WorkerDao extends BaseDao implements Dao<Worker> {
 
     @Override
     public boolean update(Worker worker) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("UPDATE \"workers\" " +
-                "SET \"is_busy\"=? " +
-                "WHERE \"id\"=?")) {
+        try (PreparedStatement statement = getConnection().prepareStatement("UPDATE workers " +
+                "SET is_busy=? " +
+                "WHERE id=?")) {
             statement.setBoolean(1, worker.isBusy());
             statement.setLong(2, worker.getId());
             int changedRows = statement.executeUpdate();
@@ -63,7 +63,7 @@ public class WorkerDao extends BaseDao implements Dao<Worker> {
 
     @Override
     public boolean delete(Long id) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("DELETE FROM \"workers\" " +
+        try (PreparedStatement statement = getConnection().prepareStatement("DELETE FROM workers " +
                 "WHERE id=?")){
             statement.setLong(1, id);
             int changedRows = statement.executeUpdate();
@@ -75,9 +75,9 @@ public class WorkerDao extends BaseDao implements Dao<Worker> {
 
     public List<Worker> readAllAvailable() throws DaoException {
         try (Statement statement = getConnection().createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery("SELECT \"id\", \"is_busy\" " +
-                    "FROM \"workers\" " +
-                    "WHERE \"is_busy\"=false")) {
+            try (ResultSet resultSet = statement.executeQuery("SELECT id, is_busy " +
+                    "FROM workers " +
+                    "WHERE is_busy=false")) {
                 List<Worker> workers = new ArrayList<>();
                 while (resultSet.next()) {
                     Worker worker = new Worker();

@@ -15,7 +15,7 @@ import java.util.List;
 public class LodgerDao extends BaseDao implements Dao<Lodger> {
     @Override
     public boolean create(Lodger lodger) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO \"lodgers\"(\"name\") " +
+        try (PreparedStatement statement = getConnection().prepareStatement("INSERT INTO lodgers (name) " +
                 "VALUES (?)")) {
             statement.setString(1, lodger.getName());
             int changedRows = statement.executeUpdate();
@@ -27,8 +27,8 @@ public class LodgerDao extends BaseDao implements Dao<Lodger> {
 
     @Override
     public Lodger read(Long id) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("SELECT (\"id\",\"name\") " +
-                "FROM \"lodgers\" " +
+        try (PreparedStatement statement = getConnection().prepareStatement("SELECT (id, name) " +
+                "FROM lodgers " +
                 "WHERE id=?",
                 Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, id);
@@ -47,9 +47,9 @@ public class LodgerDao extends BaseDao implements Dao<Lodger> {
 
     @Override
     public boolean update(Lodger lodger) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("UPDATE \"lodgers\" " +
-                "SET \"name\"=? " +
-                "WHERE \"id\"=?")) {
+        try (PreparedStatement statement = getConnection().prepareStatement("UPDATE lodgers " +
+                "SET name=? " +
+                "WHERE id=?")) {
             statement.setString(1, lodger.getName());
             statement.setLong(2, lodger.getId());
             int changedRows = statement.executeUpdate();
@@ -61,7 +61,7 @@ public class LodgerDao extends BaseDao implements Dao<Lodger> {
 
     @Override
     public boolean delete(Long id) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("DELETE FROM \"lodgers\" " +
+        try (PreparedStatement statement = getConnection().prepareStatement("DELETE FROM lodgers " +
                 "WHERE id=?")) {
             statement.setLong(1, id);
             int changedRows = statement.executeUpdate();
@@ -74,8 +74,8 @@ public class LodgerDao extends BaseDao implements Dao<Lodger> {
 
     public List<Lodger> readAll() throws DaoException {
         try (Statement statement =getConnection().createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery("SELECT \"id\", \"name\" " +
-                    "FROM \"lodgers\"")) {
+            try (ResultSet resultSet = statement.executeQuery("SELECT id, name " +
+                    "FROM lodgers")) {
                 List<Lodger> lodgers = new ArrayList<>();
                 while (resultSet.next()) {
                     Lodger lodger = new Lodger();
