@@ -1,9 +1,9 @@
 package com.epam.entity;
 
 public enum WorkScale {
-    SMALL("small"),
-    MEDIUM("medium"),
-    LARGE("large");
+    SMALL("SMALL"),
+    MEDIUM("MEDIUM"),
+    LARGE("LARGE");
     private final String scale;
 
     public String getScale() {

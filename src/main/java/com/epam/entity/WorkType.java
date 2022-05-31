@@ -1,11 +1,11 @@
 package com.epam.entity;
 
 public enum WorkType {
-    TRAVELING("traveling"),
-    REMOTE("remote"),
-    HOME("home"),
-    PART_TIME("part-time"),
-    REGULAR("regular");
+    TRAVELING("TRAVELING"),
+    REMOTE("REMOTE"),
+    HOME("HOME"),
+    PART_TIME("PART_TIME"),
+    REGULAR("REGULAR");
     private final String type;
 
     WorkType(String type) {
