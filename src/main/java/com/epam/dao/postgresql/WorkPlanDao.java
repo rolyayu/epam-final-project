@@ -38,7 +38,7 @@ public class WorkPlanDao extends BaseDao implements Dao<WorkPlan> {
         try (PreparedStatement statement = getConnection().prepareStatement("SELECT work_plan.id, " +
                 "request.id,request.scale,request.time_to_do,request.type_of_work, " +
                 "lodgers.id,lodgers.name, " +
-                "brigade.id,brigade.workers_id " +
+                "brigade.id,brigade.workers_id,work_plan.is_done " +
                 "FROM work_plan " +
                 "INNER JOIN brigade on brigade.id = work_plan.brigade_id " +
                 "INNER JOIN request on request.id = work_plan.request_id " +
@@ -66,6 +66,7 @@ public class WorkPlanDao extends BaseDao implements Dao<WorkPlan> {
                 brigade.setId(resultSet.getLong(8));
                 brigade.setWorkers(getWorkers(resultSet.getArray(9)));
                 plan.setBrigade(brigade);
+                plan.setDone(resultSet.getBoolean(10));
 
                 getConnection().commit();
                 return plan;
@@ -84,11 +85,12 @@ public class WorkPlanDao extends BaseDao implements Dao<WorkPlan> {
     @Override
     public boolean update(WorkPlan plan) throws DaoException {
         try (PreparedStatement statement = getConnection().prepareStatement("UPDATE work_plan " +
-                "SET brigade_id=?,request_id=? " +
+                "SET brigade_id=?,request_id=?, is_done=? " +
                 "WHERE \"id\"=?")) {
             statement.setLong(1, plan.getBrigade().getId());
             statement.setLong(2, plan.getRequest().getId());
-            statement.setLong(3, plan.getId());
+            statement.setBoolean(3,plan.isDone());
+            statement.setLong(4, plan.getId());
             int changedRows = statement.executeUpdate();
             return changedRows == 1;
         } catch (SQLException e) {
@@ -117,7 +119,7 @@ public class WorkPlanDao extends BaseDao implements Dao<WorkPlan> {
         try (PreparedStatement statement = getConnection().prepareStatement("SELECT work_plan.id, " +
                 "request.id,request.scale,request.time_to_do,request.type_of_work, " +
                 "lodgers.id,lodgers.name, " +
-                "brigade.id,brigade.workers_id " +
+                "brigade.id,brigade.workers_id , work_plan.is_done " +
                 "FROM work_plan " +
                 "INNER JOIN brigade on brigade.id = work_plan.brigade_id " +
                 "INNER JOIN request on request.id = work_plan.request_id " +
@@ -144,6 +146,7 @@ public class WorkPlanDao extends BaseDao implements Dao<WorkPlan> {
                     brigade.setId(resultSet.getLong(8));
                     brigade.setWorkers(getWorkers(resultSet.getArray(9)));
                     plan.setBrigade(brigade);
+                    plan.setDone(resultSet.getBoolean(10));
                     planList.add(plan);
                 }
 

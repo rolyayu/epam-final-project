@@ -7,23 +7,23 @@ VALUES
 ('John');
 
 
-INSERT INTO request (scale,time_to_do,type_of_work,lodger_id)
+INSERT INTO request (scale,time_to_do,type_of_work,lodger_id,in_process)
 VALUES
-('SMALL',30,'REGULAR',1),
-('MEDIUM',65,'REMOTE',3),
-('LARGE',115,'TRAVELING',5),
-('SMALL',15,'HOME',2),
-('MEDIUM',50,'PART_TIME',4);
+('SMALL',30,'REGULAR',1,true),
+('MEDIUM',65,'REMOTE',3,false ),
+('LARGE',115,'TRAVELING',5,false),
+('SMALL',15,'HOME',2,false),
+('MEDIUM',50,'PART_TIME',4,true);
 
 INSERT INTO workers (is_busy)
 VALUES
+(true),
+(false),
 (false),
 (true),
 (true),
 (true),
-(false),
-(false),
-(false),
+(true),
 (false),
 (false),
 (false);

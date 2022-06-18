@@ -4,6 +4,16 @@ public class WorkPlan extends Entity{
     private Request request;
     private Brigade brigade;
 
+    private boolean isDone;
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
+    }
+
     public Request getRequest() {
         return request;
     }

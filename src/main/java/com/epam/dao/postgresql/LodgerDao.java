@@ -31,13 +31,12 @@ public class LodgerDao extends BaseDao implements Dao<Lodger> {
 
     @Override
     public Lodger read(Long id) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("SELECT (id, name) " +
+        try (PreparedStatement statement = getConnection().prepareStatement("SELECT id, name " +
                 "FROM lodgers " +
                 "WHERE id=?",
                 Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, id);
-            statement.executeUpdate();
-            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
                 Lodger lodger = new Lodger();
                 lodger.setId(resultSet.getLong(1));

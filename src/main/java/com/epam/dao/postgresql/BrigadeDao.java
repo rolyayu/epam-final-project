@@ -41,7 +41,7 @@ public class BrigadeDao extends BaseDao implements Dao<Brigade> {
             throw new DaoException(e);
         }
         try {
-            statement = getConnection().prepareStatement("SELECT id, workers_id " +
+            statement = getConnection().prepareStatement("SELECT id, workers_id, is_busy " +
                             "FROM brigade " +
                             "WHERE id = ?",
                     Statement.RETURN_GENERATED_KEYS);
@@ -60,6 +60,7 @@ public class BrigadeDao extends BaseDao implements Dao<Brigade> {
                     currentBrigadeWorkers.add(readCurrentWorker(worker));
                 }
                 brigade.setWorkers(currentBrigadeWorkers);
+                brigade.setBusy(resultSet.getBoolean(3));
                 getConnection().commit();
                 return brigade;
             }
@@ -68,6 +69,7 @@ public class BrigadeDao extends BaseDao implements Dao<Brigade> {
         } finally {
             try {
                 getConnection().setAutoCommit(true);
+                getConnection().close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -82,10 +84,11 @@ public class BrigadeDao extends BaseDao implements Dao<Brigade> {
     @Override
     public boolean update(Brigade brigade) throws DaoException {
         try (PreparedStatement statement = getConnection().prepareStatement("UPDATE brigade " +
-                "SET workers_id=? " +
+                "SET workers_id=?, is_busy=? " +
                 "WHERE \"id\"=?")) {
             statement.setArray(1, getConnection().createArrayOf("int", brigade.getWorkersId()));
-            statement.setLong(2, brigade.getId());
+            statement.setBoolean(2, brigade.isBusy());
+            statement.setLong(3, brigade.getId());
             int changedRows = statement.executeUpdate();
             return changedRows == 1;
         } catch (SQLException e) {
@@ -105,6 +108,55 @@ public class BrigadeDao extends BaseDao implements Dao<Brigade> {
         }
     }
 
+    public List<Brigade> readAll() throws DaoException {
+        PreparedStatement statement = null;
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        try {
+            statement = getConnection().prepareStatement("SELECT id, workers_id, is_busy " +
+                            "FROM brigade ",
+                    Statement.RETURN_GENERATED_KEYS);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                List<Brigade> brigades = new ArrayList<>();
+                while (resultSet.next()) {
+                    Brigade brigade = new Brigade();
+                    brigade.setId(resultSet.getLong(1));
+                    Long[] workersId = Arrays.stream(((Integer[]) resultSet
+                                    .getArray(2)
+                                    .getArray()))
+                            .map(Integer::longValue)
+                            .toArray(Long[]::new);
+                    List<Worker> currentBrigadeWorkers = new ArrayList<>();
+                    for (Long worker : workersId) {
+                        currentBrigadeWorkers.add(readCurrentWorker(worker));
+                    }
+                    brigade.setWorkers(currentBrigadeWorkers);
+                    brigade.setBusy(resultSet.getBoolean(3));
+                    brigades.add(brigade);
+                }
+                getConnection().commit();
+                return brigades;
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        } finally {
+            try {
+                getConnection().setAutoCommit(true);
+                getConnection().close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                Objects.requireNonNull(statement).close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private Worker readCurrentWorker(Long id) throws DaoException{
         try (PreparedStatement statement = getConnection().prepareStatement("SELECT id, is_busy FROM workers WHERE id = ?", Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, id);
@@ -119,4 +171,5 @@ public class BrigadeDao extends BaseDao implements Dao<Brigade> {
             throw new DaoException(e);
         }
     }
+
 }

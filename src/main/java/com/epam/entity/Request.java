@@ -7,12 +7,14 @@ public class Request extends Entity{
 
     private Lodger lodger;
 
-    public Lodger getLodger() {
-        return lodger;
+    private boolean inProcess;
+
+    public boolean isInProcess() {
+        return inProcess;
     }
 
-    public void setLodger(Lodger lodger) {
-        this.lodger = lodger;
+    public void setInProcess(boolean inProcess) {
+        this.inProcess = inProcess;
     }
 
     public WorkScale getWorkScale() {
@@ -37,6 +39,14 @@ public class Request extends Entity{
 
     public void setWorkType(WorkType workType) {
         this.workType = workType;
+    }
+
+    public Lodger getLodger() {
+        return lodger;
+    }
+
+    public void setLodger(Lodger lodger) {
+        this.lodger = lodger;
     }
 
     @Override

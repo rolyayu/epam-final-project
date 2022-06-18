@@ -1,6 +1,6 @@
 package com.epam.entity;
 
-public class Worker extends Entity{
+public class Worker extends Entity {
     private boolean isBusy;
 
     public boolean isBusy() {
@@ -10,4 +10,5 @@ public class Worker extends Entity{
     public void setBusy(boolean busy) {
         isBusy = busy;
     }
+
 }

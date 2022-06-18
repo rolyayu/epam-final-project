@@ -95,4 +95,8 @@ public class WorkerDao extends BaseDao implements Dao<Worker> {
             throw new DaoException(e);
         }
     }
+
+    public int getAvailableNumber() throws DaoException {
+        return readAllAvailable().size();
+    }
 }
