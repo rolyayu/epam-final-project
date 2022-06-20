@@ -3,7 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<fmt:setLocale value="${sessionScope['locale']=='ru'?'ru':'en'}"/>
+<fmt:setLocale value="${sessionScope['locale']}"/>
 <fmt:setBundle basename="messages"/>
 
 <fmt:message var="title" key="lodger.create.title"/>

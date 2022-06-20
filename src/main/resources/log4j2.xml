@@ -3,14 +3,18 @@
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="%date{dd.MM.yyyy, HH:mm:ss} %-5level [%thread] %logger{2}.%method():%line%n%msg%n%exception%n"/>
+                    pattern="%date{dd.MM.yyyy, HH:mm:ss} %-5level [%thread] %logger{2}.%method():%line%n%msg%n%exception"/>
         </Console>
+        <File name="file" fileName="D:/Other/Studing subjects/JAVA/final_project/log/application.log" bufferedIO="false">
+            <PatternLayout
+                    pattern="%date{dd.MM.yyyy, HH:mm:ss} %-5level [%thread] %logger{2}.%method():%line%n%msg%n%exception"/>
+        </File>
     </Appenders>
-
 
     <Loggers>
         <Root level="info">
             <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
         </Root>
     </Loggers>
 </Configuration>
