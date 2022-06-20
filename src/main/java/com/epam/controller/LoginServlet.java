@@ -1,9 +1,9 @@
 package com.epam.controller;
 
 import com.epam.entity.Lodger;
-import com.epam.ioc.ServiceFactory;
-import com.epam.ioc.ServiceFactoryCreator;
-import com.epam.ioc.ServiceFactoryException;
+import com.epam.factory.ServiceFactory;
+import com.epam.factory.ServiceFactoryCreator;
+import com.epam.factory.ServiceFactoryException;
 import com.epam.service.exception.ServiceException;
 import org.apache.logging.log4j.LogManager;
 
@@ -45,9 +45,9 @@ public class LoginServlet extends HttpServlet {
             } else {
                 session.setAttribute("currentLodger", lodgerName);
                 if (lodgerName.equals("epam_reviewer")) {
-                    LogManager.getLogger().info("login as dispatcher");
+                    LogManager.getLogger().info(bundle.getString("log4j.info.login.dispatcher"));
                 } else {
-                    LogManager.getLogger().info("login as " + lodgerName.toLowerCase());
+                    LogManager.getLogger().info(bundle.getString("log4j.info.login.lodger") + lodgerName.toLowerCase());
                 }
                 resp.sendRedirect("title-page.jsp");
             }

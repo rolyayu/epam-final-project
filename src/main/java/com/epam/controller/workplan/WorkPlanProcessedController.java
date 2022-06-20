@@ -1,13 +1,12 @@
 package com.epam.controller.workplan;
 
 import com.epam.entity.WorkPlan;
-import com.epam.entity.Worker;
-import com.epam.ioc.ServiceFactory;
-import com.epam.ioc.ServiceFactoryCreator;
-import com.epam.ioc.ServiceFactoryException;
+import com.epam.factory.ServiceFactory;
+import com.epam.factory.ServiceFactoryCreator;
+import com.epam.factory.ServiceFactoryException;
 import com.epam.service.WorkPlanService;
-import com.epam.service.WorkerService;
 import com.epam.service.exception.ServiceException;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 
 @WebServlet("/workplan-processed")
@@ -28,6 +28,7 @@ public class WorkPlanProcessedController extends HttpServlet {
                 WorkPlanService workPlanService = factory.getWorkPlanService();
                 WorkPlan toProcessed = workPlanService.readById(id);
                 factory.getDispatcher().completeWorkPlan(toProcessed);
+                LogManager.getLogger().info(ResourceBundle.getBundle("messages").getString("log4j.info.workplan.process"));
                 resp.sendRedirect("workplan-view");
             }
         } catch (ServiceFactoryException | ServiceException e) {
