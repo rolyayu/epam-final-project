@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="u" tagdir="/WEB-INF/tags" %>
 
-<fmt:setLocale value="${sessionScope['locale']=='ru'?'ru':'en'}"/>
+<fmt:setLocale value="${sessionScope['locale']}"/>
 <fmt:setBundle basename="messages"/>
 
 <fmt:message var="title" key="request.view.title"/>
@@ -52,8 +52,8 @@
                 <c:otherwise>${inProcessFalse}</c:otherwise>
             </c:choose></td>
             <c:if test="${request.inProcess==false
-            && sessionScope['currentLodger']==request.lodger.name
-            || sessionScope['currentLodger']=='epam_reviewer'}">
+            && (sessionScope['currentLodger']==request.lodger.name
+            || sessionScope['currentLodger']=='epam_reviewer')}">
                 <c:url value="request-delete" var="requestDelete">
                     <c:param name="requestId" value="${request.id}"/>
                 </c:url>
@@ -86,8 +86,5 @@
     </form>
 </c:if>
 
-<c:if test="${not empty param['message']}">
-    <h1>${param['message']}</h1>
-</c:if>
 </body>
 </html>

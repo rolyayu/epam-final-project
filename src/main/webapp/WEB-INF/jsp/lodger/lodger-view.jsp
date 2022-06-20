@@ -3,11 +3,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="u" tagdir="/WEB-INF/tags" %>
 
-<fmt:setLocale value="${sessionScope['locale']=='ru'?'ru':'en'}"/>
+<fmt:setLocale value="${sessionScope['locale']}"/>
 <fmt:setBundle basename="messages"/>
 
 <fmt:message var="title" key="lodger.view.title"/>
+<fmt:message var="tableTitle" key="lodger.table.title"/>
 <fmt:message var="delete" key="lodger.delete.button"/>
+<fmt:message var="addButton" key="lodger.create.add.button"/>
 
 <html>
 <head>
@@ -18,7 +20,7 @@
 <table>
     <thead>
     <tr>
-        <th colspan="3">Lodgers name</th>
+        <th colspan="2">${tableTitle}</th>
     </tr>
     </thead>
     <tbody>
@@ -40,12 +42,9 @@
     </tbody>
 </table>
 <c:if test="${sessionScope['currentLodger']=='epam_reviewer'}">
-    <form action="<c:url value="/lodger-add.jsp"/>">
-        <input type="submit" value="Add lodger"/>
+    <form action="<c:url value="lodger-add"/>">
+        <input type="submit" value="${addButton}"/>
     </form>
-</c:if>
-<c:if test="${not empty param['message']}">
-    <h1>${param['message']}</h1>
 </c:if>
 </body>
 </html>
