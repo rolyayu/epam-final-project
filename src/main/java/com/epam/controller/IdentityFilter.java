@@ -25,7 +25,6 @@ public class IdentityFilter implements Filter {
             }
         } else {
             resp.sendRedirect("login-page.jsp");
-//            req.getRequestDispatcher("login.html").forward(req,resp);
         }
     }
 }
