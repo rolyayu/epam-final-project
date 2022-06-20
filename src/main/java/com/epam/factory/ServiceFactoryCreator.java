@@ -1,4 +1,4 @@
-package com.epam.ioc;
+package com.epam.factory;
 
 public class ServiceFactoryCreator {
     static public ServiceFactory newInstance() {

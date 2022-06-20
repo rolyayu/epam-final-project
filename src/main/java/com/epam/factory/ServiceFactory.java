@@ -1,7 +1,6 @@
-package com.epam.ioc;
+package com.epam.factory;
 
 import com.epam.dao.postgresql.*;
-import com.epam.entity.Request;
 import com.epam.pool.ConnectionPool;
 import com.epam.service.*;
 
@@ -95,6 +94,7 @@ public class ServiceFactory implements AutoCloseable {
         if (brigadeService == null) {
             BrigadeService brigadeService = new BrigadeService();
             brigadeService.setBrigadeDao(getBrigadeDao());
+            brigadeService.setWorkerDao(getWorkerDao());
             this.brigadeService = brigadeService;
         }
         return brigadeService;

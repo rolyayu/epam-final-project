@@ -1,4 +1,4 @@
-package com.epam.ioc;
+package com.epam.factory;
 
 public class ServiceFactoryException extends Exception{
     public ServiceFactoryException() {
