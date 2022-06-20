@@ -1,9 +1,9 @@
 package com.epam.controller.request;
 
 import com.epam.entity.Request;
-import com.epam.ioc.ServiceFactory;
-import com.epam.ioc.ServiceFactoryCreator;
-import com.epam.ioc.ServiceFactoryException;
+import com.epam.factory.ServiceFactory;
+import com.epam.factory.ServiceFactoryCreator;
+import com.epam.factory.ServiceFactoryException;
 import com.epam.service.exception.NotEnoughWorkersException;
 import com.epam.service.exception.ServiceException;
 import org.apache.logging.log4j.LogManager;
@@ -25,31 +25,22 @@ public class RequestProcessController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Locale locale = new Locale(req.getSession().getAttribute("locale").toString());
         ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+
         try (ServiceFactory factory = ServiceFactoryCreator.newInstance()) {
             String requestIdString = req.getParameter("requestId");
             Long requestId = Long.valueOf(requestIdString);
             Request toProcess = factory.getRequestService().readById(requestId);
-            boolean success = false;
-            String message;
-            if (toProcess.isInProcess()) {
-                message = bundle.getString("request.table.inprocess.true");
-            } else {
-                try {
-                    Long processedRequestId = factory.getDispatcher().formatWorkPlan(toProcess);
-                    success = true;
-                    toProcess.setInProcess(true);
-                    factory.getRequestService().save(toProcess);
-                    message = bundle.getString("request.ready");
-                } catch (NotEnoughWorkersException e) {
-                    message = bundle.getString("error.brigade.not.enough.workers");
-                } catch (ServiceException e) {
-                    message = bundle.getString("request.table.inprocess.true");
-                }
-                if (!success) {
-                    LogManager.getLogger().error("request not processed");
-                }
+
+            try {
+                factory.getDispatcher().formatWorkPlan(toProcess);
+                factory.getRequestService().save(toProcess);
+                LogManager.getLogger().info(bundle.getString("log4j.info.request.process"));
+            } catch (NotEnoughWorkersException e) {
+                LogManager.getLogger().error(bundle.getString("log4j.error.request.not.enough"));
+            } catch (ServiceException e) {
+                LogManager.getLogger().error(bundle.getString("log4j.error.request.inprocess"));
             }
-            resp.sendRedirect("request-view?message=" + URLDecoder.decode(message, StandardCharsets.UTF_8));
+            resp.sendRedirect("request-view");
         } catch (ServiceFactoryException | ServiceException e) {
             e.printStackTrace();
         }

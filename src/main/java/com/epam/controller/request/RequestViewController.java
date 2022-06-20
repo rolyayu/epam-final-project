@@ -1,9 +1,9 @@
 package com.epam.controller.request;
 
 import com.epam.entity.Request;
-import com.epam.ioc.ServiceFactory;
-import com.epam.ioc.ServiceFactoryCreator;
-import com.epam.ioc.ServiceFactoryException;
+import com.epam.factory.ServiceFactory;
+import com.epam.factory.ServiceFactoryCreator;
+import com.epam.factory.ServiceFactoryException;
 import com.epam.service.exception.ServiceException;
 
 import javax.servlet.ServletException;
