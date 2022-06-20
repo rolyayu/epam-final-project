@@ -33,13 +33,12 @@ public class WorkerDao extends BaseDao implements Dao<Worker> {
 
     @Override
     public Worker read(Long id) throws DaoException {
-        try (PreparedStatement statement = getConnection().prepareStatement("SELECT (id,is_busy) " +
+        try (PreparedStatement statement = getConnection().prepareStatement("SELECT * " +
                 "FROM workers " +
                 "WHERE id=?", Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setLong(1, id);
-            statement.executeUpdate();
-            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
                 Worker worker = new Worker();
                 worker.setId(resultSet.getLong(1));
