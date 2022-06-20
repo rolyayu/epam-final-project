@@ -50,13 +50,7 @@ public class Dispatcher {
         try {
             transaction.start();
             List<Worker> availableWorkers = workerDao.readAllAvailable();
-            int neededWorkers;
-            switch (request.getWorkScale()) {
-                case SMALL -> neededWorkers=2;
-                case MEDIUM -> neededWorkers=3;
-                case LARGE -> neededWorkers=4;
-                default -> neededWorkers=1;
-            }
+            int neededWorkers = request.getWorkScale().getNeededWorkers();
             if(neededWorkers>availableWorkers.size()) {
                 throw new NotEnoughWorkersException();
             } else {
@@ -91,14 +85,27 @@ public class Dispatcher {
                 e.printStackTrace();
             }
         }
-        //return null;
     }
 
     public Long formatWorkPlan(Request request) throws ServiceException{
         try {
             WorkPlan plan = new WorkPlan();
-            plan.setBrigade(formatBrigade(request));
+            plan.setDone(false);
+            List<Brigade> availableBrigades = brigadeDao.readAll()
+                    .stream()
+                    .filter(brigade -> !brigade.isBusy())
+                    .filter(brigade -> brigade.getWorkers().size()==request.getWorkScale().getNeededWorkers())
+                    .toList();
+            if(!availableBrigades.isEmpty()) {
+                Brigade forCurrentRequest = availableBrigades.get(0);
+                forCurrentRequest.setBusy(true);
+                brigadeDao.update(forCurrentRequest);
+                plan.setBrigade(forCurrentRequest);
+            } else {
+                plan.setBrigade(formatBrigade(request));
+            }
             plan.setRequest(request);
+            request.setInProcess(true);
             return workPlanDao.create(plan);
         } catch (DaoException e) {
             throw new ServiceException(e);
@@ -108,7 +115,6 @@ public class Dispatcher {
     public void completeWorkPlan(WorkPlan planToComplete) throws ServiceException {
         try {
             Brigade brigade = planToComplete.getBrigade();
-            workerService.freeWorkers(brigade.getWorkers());
             planToComplete.setDone(true);
             brigade.setBusy(false);
             brigadeDao.update(brigade);

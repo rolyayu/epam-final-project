@@ -3,6 +3,8 @@ package com.epam.service;
 import com.epam.dao.DaoException;
 import com.epam.dao.postgresql.BrigadeDao;
 import com.epam.dao.postgresql.WorkPlanDao;
+import com.epam.entity.Entity;
+import com.epam.entity.Request;
 import com.epam.entity.WorkPlan;
 import com.epam.service.exception.ServiceException;
 
@@ -53,9 +55,24 @@ public class WorkPlanService {
 
     public boolean delete(WorkPlan plan) throws ServiceException {
         try {
-            brigadeDao.delete(plan.getBrigade().getId());
+            plan.getBrigade().setBusy(false);
+            brigadeDao.update(plan.getBrigade());
             return workPlanDao.delete(plan.getId());
         } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    public List<WorkPlan> getPlansByRequests(List<Request> requests) throws ServiceException{
+        try {
+            List<Long> requestsId = requests.stream()
+                    .map(Entity::getId)
+                    .toList();
+            return workPlanDao.readAll()
+                    .stream()
+                    .filter(plan -> requestsId.contains(plan.getRequest().getId()))
+                    .toList();
+        } catch (DaoException e ) {
             throw new ServiceException(e);
         }
     }

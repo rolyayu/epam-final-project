@@ -2,8 +2,10 @@ package com.epam.service;
 
 import com.epam.dao.DaoException;
 import com.epam.dao.postgresql.RequestDao;
+import com.epam.entity.Entity;
 import com.epam.entity.Lodger;
 import com.epam.entity.Request;
+import com.epam.entity.WorkPlan;
 import com.epam.service.exception.ServiceException;
 
 import java.util.List;

@@ -37,6 +37,7 @@ public class LodgerService {
         request.setTimeToDo(timeToDo);
         request.setWorkType(type);
         request.setLodger(sender);
+        request.setInProcess(false);
         try {
             return requestDao.create(request);
         } catch (DaoException e) {
@@ -70,29 +71,34 @@ public class LodgerService {
 
     public boolean delete(Long id) throws ServiceException {
         try {
-            transaction.start();
-            try {
-                boolean isDeleted = lodgerDao.delete(id);
-                transaction.commit();
-                return isDeleted;
-            } catch (DaoException exception) {
-                try {
-                    transaction.rollback();
-                } catch (TransactionException e) {
-                    throw new TransactionException(e);
-                }
-            } catch (TransactionException e) {
-                throw new ServiceException(e);
-            }
-        } catch (TransactionException e) {
+            return lodgerDao.delete(id);
+        } catch (DaoException e) {
             throw new ServiceException(e);
-        } finally {
-            try {
-                transaction.close();
-            } catch (TransactionException e) {
-                e.printStackTrace();
-            }
         }
-        return false;
+//        try {
+//            transaction.start();
+//            try {
+//                boolean isDeleted = lodgerDao.delete(id);
+//                transaction.commit();
+//                return isDeleted;
+//            } catch (DaoException exception) {
+//                try {
+//                    transaction.rollback();
+//                } catch (TransactionException e) {
+//                    throw new TransactionException(e);
+//                }
+//            } catch (TransactionException e) {
+//                throw new ServiceException(e);
+//            }
+//        } catch (TransactionException e) {
+//            throw new ServiceException(e);
+//        } finally {
+//            try {
+//                transaction.close();
+//            } catch (TransactionException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return false;
     }
 }

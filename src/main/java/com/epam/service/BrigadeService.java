@@ -5,6 +5,7 @@ import com.epam.dao.DaoException;
 import com.epam.dao.postgresql.BrigadeDao;
 import com.epam.dao.postgresql.WorkerDao;
 import com.epam.entity.Brigade;
+import com.epam.entity.WorkPlan;
 import com.epam.entity.Worker;
 import com.epam.service.exception.ServiceException;
 
@@ -40,6 +41,18 @@ public class BrigadeService {
     public List<Brigade> readAll() throws ServiceException{
         try {
             return brigadeDao.readAll();
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    public void dissolve(Brigade brigade) throws ServiceException {
+        try {
+            for(Worker worker:brigade.getWorkers()) {
+                worker.setBusy(false);
+                workerDao.update(worker);
+            }
+            brigadeDao.delete(brigade.getId());
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
