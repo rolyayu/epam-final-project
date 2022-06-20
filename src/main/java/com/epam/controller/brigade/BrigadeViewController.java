@@ -1,9 +1,9 @@
 package com.epam.controller.brigade;
 
 import com.epam.entity.Brigade;
-import com.epam.ioc.ServiceFactory;
-import com.epam.ioc.ServiceFactoryCreator;
-import com.epam.ioc.ServiceFactoryException;
+import com.epam.factory.ServiceFactory;
+import com.epam.factory.ServiceFactoryCreator;
+import com.epam.factory.ServiceFactoryException;
 import com.epam.service.exception.ServiceException;
 
 import javax.servlet.ServletException;
@@ -21,6 +21,8 @@ public class BrigadeViewController extends HttpServlet {
         try(ServiceFactory factory = ServiceFactoryCreator.newInstance()) {
             List<Brigade> brigadeList = factory.getBrigadeService().readAll();
             req.setAttribute("brigades",brigadeList);
+            int availableWorkers = factory.getWorkerService().readAllAvailable().size();
+            req.setAttribute("availableWorkers",availableWorkers);
             req.getRequestDispatcher("/WEB-INF/jsp/brigade/brigade-view.jsp").forward(req,resp);
         } catch (ServiceFactoryException | ServiceException e) {
             e.printStackTrace();
